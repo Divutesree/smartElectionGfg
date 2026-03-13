@@ -77,7 +77,7 @@ while True:
         cv2.rectangle(frame, (x, y), (x+w, y+h), (50, 50, 255), 1)
         attendance = [output[0], timestamp]
         if start_time is not None:
-         if time.time() - start_time > 60:
+         if time.time() - start_time > 180:
             speak("Time limit exceeded")
             break
 
