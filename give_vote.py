@@ -46,18 +46,23 @@ def check_if_exists(value):
     except FileNotFoundError:
         print("File not found or unable to open the CSV file.")
     return False
-start_time = time.time()
+start_time = None
+frame_count = 0
 while True:
     ret, frame = video.read()
-    if time.time() - start_time > 60:
-        speak("Time limit exceeded")
-        break
+    frame_count += 1
     frame = cv2.resize(frame,(640,480))
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    faces = facedetect.detectMultiScale(gray, 1.3, 5)
+    if frame_count % 3 == 0:
+      faces = facedetect.detectMultiScale(gray, 1.3, 5)
+    else:
+      faces = []
     
     output = None  # Initialize output to a default value
     for (x, y, w, h) in faces:
+        if start_time is None:
+            start_time = time.time()
+
         crop_img = frame[y:y+h, x:x+w]
         resized_img = cv2.resize(crop_img, (50, 50)).flatten().reshape(1, -1)
         output = knn.predict(resized_img)
@@ -71,6 +76,11 @@ while True:
         cv2.putText(frame, str(output[0]), (x, y-15), cv2.FONT_HERSHEY_COMPLEX, 1, (255, 255, 255), 1)
         cv2.rectangle(frame, (x, y), (x+w, y+h), (50, 50, 255), 1)
         attendance = [output[0], timestamp]
+        if start_time is not None:
+         if time.time() - start_time > 60:
+            speak("Time limit exceeded")
+            break
+
         
     imgBackground[370:370 + 480, 225:225 + 640] = frame
     cv2.imshow('frame', imgBackground)
