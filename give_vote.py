@@ -16,6 +16,9 @@ def speak(str1):
 
 
 video = cv2.VideoCapture(0)
+cv2.namedWindow("frame", cv2.WINDOW_NORMAL)
+cv2.setWindowProperty("frame", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+
 facedetect = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 if not os.path.exists('data/'):
     os.makedirs('data/')
@@ -29,6 +32,7 @@ with open('data/faces_data.pkl', 'rb') as f:
 knn = KNeighborsClassifier(n_neighbors=5)
 knn.fit(FACES, LABELS)
 imgBackground = cv2.imread("background.png")
+imgBackground = cv2.resize(imgBackground, (1920,1080))
 
 COL_NAMES = ['NAME', 'VOTE', 'DATE', 'TIME']
 
@@ -45,6 +49,7 @@ def check_if_exists(value):
 
 while True:
     ret, frame = video.read()
+    frame = cv2.resize(frame,(640,480))
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     faces = facedetect.detectMultiScale(gray, 1.3, 5)
     
