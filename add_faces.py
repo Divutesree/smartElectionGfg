@@ -9,6 +9,8 @@ if not os.path.exists('data/'):
 
 # Start camera
 video = cv2.VideoCapture(0)
+video.set(3, 640)   # width
+video.set(4, 480)   # height
 
 # Make camera window fullscreen
 cv2.namedWindow("frame", cv2.WINDOW_NORMAL)
@@ -27,6 +29,7 @@ captureAfterFrame = 2
 
 while True:
     ret, frame = video.read()
+    frame = cv2.resize(frame,(640,480))
 
     if not ret:
         break
