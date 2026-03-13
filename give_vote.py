@@ -46,9 +46,12 @@ def check_if_exists(value):
     except FileNotFoundError:
         print("File not found or unable to open the CSV file.")
     return False
-
+start_time = time.time()
 while True:
     ret, frame = video.read()
+    if time.time() - start_time > 60:
+        speak("Time limit exceeded")
+        break
     frame = cv2.resize(frame,(640,480))
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     faces = facedetect.detectMultiScale(gray, 1.3, 5)
